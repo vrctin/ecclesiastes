@@ -19,7 +19,8 @@ export class MatchViewComponent implements OnInit {
     zoomStepDuration: 0.2,
     freeMouseWheelFactor: 0.01,
     zoomToFitZoomLevelFactor: 0.9,
-    dragMouseButton: 'left'
+    dragMouseButton: 'left',
+    keepInBounds: true
   });
 
 }
