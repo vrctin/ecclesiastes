@@ -6,12 +6,14 @@ import { UserDataService } from './../../services/user-data.service';
   templateUrl: './lobby.component.html',
   styleUrls: ['./lobby.component.css']
 })
+
 export class LobbyComponent implements OnInit {
 
   constructor(private userDataService: UserDataService) { }
 
   ngOnInit() {
-    console.log("Username: " + this.userDataService.username)
+    console.log("-- IN LOBBY --");
+    console.log("Username: " + this.userDataService.username);
   }
 
 }
