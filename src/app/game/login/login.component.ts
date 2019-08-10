@@ -1,10 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 
-// Material
-import {MatFormFieldModule} from '@angular/material/form-field';
-import {MatCardModule} from '@angular/material/card';
-import {MatInputModule} from '@angular/material/input';
-
 // Routing
 import { ActivatedRoute, Router } from '@angular/router';
 

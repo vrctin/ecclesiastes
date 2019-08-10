@@ -1,1 +1,16 @@
-<p>match-view works!</p>
+<div class="main">
+  <div fxLayout="row">
+    <div fxFlex class="game-map">
+      <pan-zoom [config]="panzoomConfig">
+        <div>
+          <img src="/assets/europe.svg" class="bg-map">
+        </div>
+      </pan-zoom>
+    </div>
+
+    <div fxFlex="20" class="info-panel">
+      <app-info-panel></app-info-panel>
+    </div>
+  </div>
+</div>
+<router-outlet></router-outlet>

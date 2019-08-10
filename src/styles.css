@@ -3,4 +3,5 @@
 
 .main {
   background-image:url("assets/floor-tile.png");
+  margin: 0;
 }

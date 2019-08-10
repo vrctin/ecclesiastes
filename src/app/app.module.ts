@@ -23,10 +23,15 @@ import { FlexLayoutModule } from '@angular/flex-layout';
 
 // Services
 import { Injectable } from '@angular/core';
+import { InfoPanelComponent } from './game/match-view/info-panel/info-panel.component';
+
+// panzoom
+import { Ng2PanZoomModule } from 'ng2-panzoom';
 
 const appRoutes: Routes = [
   { path: 'login', component: LoginComponent },
   { path: 'lobby', component: LobbyComponent },
+  { path: 'match-view', component: MatchViewComponent },
 
   // Redirect automat spre login la accesarea site-ului
   {
@@ -45,7 +50,8 @@ const appRoutes: Routes = [
     LoginComponent,
     LobbyComponent,
     MatchViewComponent,
-    PageNotFoundComponent
+    PageNotFoundComponent,
+    InfoPanelComponent
   ],
   imports: [
     BrowserModule,
@@ -58,7 +64,9 @@ const appRoutes: Routes = [
     MatInputModule,
     FormsModule,
 
-    FlexLayoutModule
+    FlexLayoutModule,
+
+    Ng2PanZoomModule 
   ],
   providers: [],
   bootstrap: [AppComponent]
