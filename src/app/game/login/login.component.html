@@ -1,1 +1,14 @@
-<p>login works!</p>
+<div class="main" fxLayoutAlign="center center">
+  <mat-card class="login-card">
+    <mat-card-header>
+      <mat-card-title>Conq2</mat-card-title>
+    </mat-card-header>
+
+    <mat-card-content fxLayout="row" fxLayoutAlign="center center">
+      <mat-form-field class="example-full-width">
+        <input matInput placeholder="Insert name" [(ngModel)]="username">
+      </mat-form-field>
+      <button mat-button (click)="userLogin()">Login</button>
+    </mat-card-content>
+  </mat-card>
+</div>
