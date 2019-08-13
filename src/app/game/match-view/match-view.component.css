@@ -1,11 +1,12 @@
-.game-map {
-  min-height:100vh;
-}
-
-.bg-map {
-  height:100%;
-  width:100%;
-}
 .info-panel {
   background-color: white;
+}
+
+.horizontal {
+  height:100vh;
+}
+
+.game-map-panel {
+  height:100%;
+  width:100%;
 }

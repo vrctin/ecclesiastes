@@ -15,7 +15,16 @@ export class MatchViewComponent implements OnInit {
   }
 
   ngAfterViewInit(){
-    var panZoomMap = svgPanZoom('#gameMap');
+    var panZoomMap = svgPanZoom('#gameMap', {
+      panEnabled: true,
+      controlIconsEnabled: true,
+      zoomEnabled: true,
+      contain: true,
+      center: 1,
+      fit: 1,
+      refreshRate: 'auto',
+      zoomScaleSensitivity: 0.6
+    });
   }
 
 }
