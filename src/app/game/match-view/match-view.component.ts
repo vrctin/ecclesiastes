@@ -20,8 +20,8 @@ export class MatchViewComponent implements OnInit {
       controlIconsEnabled: true,
       zoomEnabled: true,
       contain: true,
-      center: 1,
-      fit: 1,
+      center: true,
+      fit: true,
       refreshRate: 'auto',
       zoomScaleSensitivity: 0.6
     });
