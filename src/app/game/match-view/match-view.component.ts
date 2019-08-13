@@ -14,6 +14,10 @@ export class MatchViewComponent implements OnInit {
   ngOnInit() {
   }
 
+  getId(event: any){
+    console.log("Mouse down on element with id " + event.toElement.id)
+  }
+
   ngAfterViewInit(){
     var panZoomMap = svgPanZoom('#gameMap', {
       panEnabled: true,
