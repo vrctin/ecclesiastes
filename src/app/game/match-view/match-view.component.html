@@ -1,11 +1,9 @@
 <div class="main">
   <div fxLayout="row">
     <div fxFlex class="game-map">
-      <pan-zoom [config]="panzoomConfig">
-        <div>
-          <object data="/assets/world.svg" class="bg-map" type="image/svg+xml"></object>
-        </div>
-      </pan-zoom>
+      <div>
+        <img src="/assets/world.svg" class="bg-map" id="gameMap" #gameMap>
+      </div>
     </div>
 
     <div fxFlex="20" class="info-panel">
