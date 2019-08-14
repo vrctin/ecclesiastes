@@ -14,6 +14,8 @@ export class MatchViewComponent implements OnInit {
   public currentDownProvince = '';
   public currentUpProvince = '';
 
+
+  public showArrow = false;
   @ViewChild('gameMap', { static: false }) scene: ElementRef;
 
   public provinceIDs = ["MT_NO", "MT_CE", "MT_SO", "MT_SE", "MT_GO"];
@@ -23,6 +25,8 @@ export class MatchViewComponent implements OnInit {
   onMousedown($event){
     console.log("Holding " + $event.srcElement.id);
     if(this.isProvince($event)){
+      this.showArrow = true;
+
       this.panZoomMap.disablePan();
 
       // Data updates
@@ -38,7 +42,7 @@ export class MatchViewComponent implements OnInit {
   currentHover = '';
   @HostListener('mousemove', ['$event'])
   onMousemove($event){
-    if(this.currentlyOnProvince && this.currentDownProvince && this.currentUpProvince && this.isProvince($event)){
+    if(this.currentlyOnProvince && this.currentDownProvince && this.isProvince($event)){
       let downBox = (<any>document.getElementById(this.currentDownProvince)).getBBox();
       let upBox = (<any>document.getElementById($event.srcElement.id)).getBBox();
 
@@ -57,9 +61,10 @@ export class MatchViewComponent implements OnInit {
     }
   }
 
-  public transformParameter = '';
+  public transformParameter = 'rotate(0)scale(0.1)';
   @HostListener('mouseup', ['$event'])
   onMouseup($event){
+    this.showArrow = false;
     this.panZoomMap.enablePan();
     //console.log("Mouseup on " + $event.srcElement.id);
     // Data updates
@@ -79,6 +84,7 @@ export class MatchViewComponent implements OnInit {
     }
   }
 
+  scaleDegree = "0.1";
   // Graphics & checks
   updateArrow(downBox: any, upBox: any): void {
     let centerPoints = this.getCenterValues(downBox, upBox);
@@ -89,7 +95,17 @@ export class MatchViewComponent implements OnInit {
 
     //console.log("Degree: " + degree);
     //console.log("Determinant: " + determinant);
-    this.transformParameter = this.getTransformParameter(degree);
+    this.transformParameter = this.getTransformParameter(degree, this.scaleDegree, centerPoints.x1, centerPoints.y1);
+  }
+
+  getTransformParameter(degree: number, scaleDegree: string, translateX:number, translateY:number): string {
+    if(!degree) return "rotate(0)"+"scale("+scaleDegree+")"+"translate("+translateX + "," + translateY + ")";
+    console.log("rotate(" + degree + ")"+
+           "scale("+scaleDegree+")"+
+           "translate("+translateX + "," + translateY + ")");
+    return "rotate(" + degree + ")"+
+           "scale("+scaleDegree+")"+
+           "translate("+translateX + "," + translateY + ")";
   }
 
   isProvince(event: any){
@@ -101,11 +117,6 @@ export class MatchViewComponent implements OnInit {
     return x1*y2 - x2*y1;
   }
 
-  getTransformParameter(degree: number): string {
-    if(!degree) return "rotate(0)";
-    return "rotate(" + degree + ")";
-  }
-
   getDistance(x1: number, x2:number, y1: number, y2: number): number{
     return Math.sqrt(Math.pow((x1-x2), 2) + Math.pow((y1-y2), 2));
   }
@@ -113,7 +124,6 @@ export class MatchViewComponent implements OnInit {
   getDegree(x1: number, x2: number, y1: number, y2: number): number{
     return Math.atan(Math.abs(y1-y2)/Math.abs(x1-x2))*180/Math.PI;
   }
-
 
   getCenterValues(first: any, second: any){
     return {
@@ -138,6 +148,7 @@ export class MatchViewComponent implements OnInit {
     this.panZoomMap = svgPanZoom('#gameMap', {
       panEnabled: true,
       controlIconsEnabled: true,
+      dblClickZoomEnabled: false,
       zoomEnabled: true,
       contain: true,
       center: true,
