@@ -19,18 +19,9 @@ export class MatchViewComponent implements OnInit {
   public provinceIDs = ["MT_NO", "MT_CE", "MT_SO", "MT_SE", "MT_GO"];
 
   // Click events
-  isProvince(event: any){
-    return this.provinceIDs.indexOf(event.srcElement.id)!=-1;
-  }
-
-  resetProvinces(){
-    this.currentUpProvince = '';
-    this.currentDownProvince = '';
-  }
-
   @HostListener('mousedown', ['$event'])
   onMousedown($event){
-    //console.log("Mousedown on " + $event.srcElement.id);
+    console.log("Holding " + $event.srcElement.id);
     if(this.isProvince($event)){
       this.panZoomMap.disablePan();
 
@@ -43,12 +34,27 @@ export class MatchViewComponent implements OnInit {
     }
   }
 
-  getDistance(x1: number, x2:number, y1: number, y2: number): number{
-    return Math.sqrt(Math.pow((x1-x2), 2) + Math.pow((y1-y2), 2));
-  }
+  showedOnce = false;
+  currentHover = '';
+  @HostListener('mousemove', ['$event'])
+  onMousemove($event){
+    if(this.currentlyOnProvince && this.currentDownProvince && this.currentUpProvince && this.isProvince($event)){
+      let downBox = (<any>document.getElementById(this.currentDownProvince)).getBBox();
+      let upBox = (<any>document.getElementById($event.srcElement.id)).getBBox();
 
-  getDegree(x1: number, x2: number, y1: number, y2: number): number{
-    return Math.atan(Math.abs(y1-y2)/Math.abs(x1-x2))*180/Math.PI;
+      if(!this.showedOnce){
+        console.log("Over " + $event.srcElement.id);
+        this.currentHover = $event.srcElement.id;
+        this.showedOnce = true;
+      }
+
+      if(this.showedOnce && $event.srcElement.id!=this.currentHover){
+        this.currentHover = $event.srcElement.id;
+        this.showedOnce = false;
+      }
+
+      this.updateArrow(downBox, upBox);
+    }
   }
 
   public transformParameter = '';
@@ -57,39 +63,57 @@ export class MatchViewComponent implements OnInit {
     this.panZoomMap.enablePan();
     //console.log("Mouseup on " + $event.srcElement.id);
     // Data updates
+
+    this.currentlyOnProvince = false;
     if(this.isProvince($event)){
-      this.currentlyOnProvince = false;
       this.currentUpProvince = $event.srcElement.id;
 
-
-      console.log("Down on: " + this.currentDownProvince);
-      console.log("Up on: " + this.currentUpProvince);
+      //console.log("Down on: " + this.currentDownProvince);
+      //console.log("Up on: " + this.currentUpProvince);
 
       if(this.currentDownProvince && this.currentUpProvince){
         let downBox = (<any>document.getElementById(this.currentDownProvince)).getBBox();
         let upBox = (<any>document.getElementById(this.currentUpProvince)).getBBox();
-
-        let centerPoints = this.getCenterValues(downBox, upBox);
-        let degree = this.getDegree(centerPoints.x1, centerPoints.x2, centerPoints.y1, centerPoints.y2);
-        let determinant = this.getDeterminant(centerPoints.x1, centerPoints.x2, centerPoints.y1, centerPoints.y2);
-
-        if(determinant<0) degree+=180;
-
-        console.log("Degree: " + degree);
-        console.log("Determinant: " + determinant);
-        this.transformParameter = this.getTransformParameter(degree);
-        console.log(centerPoints);
+        this.updateArrow(downBox, upBox);
       }
     }
   }
 
+  // Graphics & checks
+  updateArrow(downBox: any, upBox: any): void {
+    let centerPoints = this.getCenterValues(downBox, upBox);
+    let degree = this.getDegree(centerPoints.x1, centerPoints.x2, centerPoints.y1, centerPoints.y2);
+    let determinant = this.getDeterminant(centerPoints.x1, centerPoints.x2, centerPoints.y1, centerPoints.y2);
+
+    if(determinant<0) degree+=180;
+
+    //console.log("Degree: " + degree);
+    //console.log("Determinant: " + determinant);
+    this.transformParameter = this.getTransformParameter(degree);
+  }
+
+  isProvince(event: any){
+    return this.provinceIDs.indexOf(event.srcElement.id)!=-1;
+  }
+
+  // Game Math
   getDeterminant(x1: number, x2: number, y1: number, y2: number): number {
     return x1*y2 - x2*y1;
   }
 
   getTransformParameter(degree: number): string {
+    if(!degree) return "rotate(0)";
     return "rotate(" + degree + ")";
   }
+
+  getDistance(x1: number, x2:number, y1: number, y2: number): number{
+    return Math.sqrt(Math.pow((x1-x2), 2) + Math.pow((y1-y2), 2));
+  }
+
+  getDegree(x1: number, x2: number, y1: number, y2: number): number{
+    return Math.atan(Math.abs(y1-y2)/Math.abs(x1-x2))*180/Math.PI;
+  }
+
 
   getCenterValues(first: any, second: any){
     return {
@@ -98,11 +122,6 @@ export class MatchViewComponent implements OnInit {
       x2: second.x + second.width/2,
       y2: second.y + second.height/2
     }
-  }
-
-  @HostListener('mousemove')
-  onMousemove(){
-
   }
 
   // Constructor & Lifehooks
