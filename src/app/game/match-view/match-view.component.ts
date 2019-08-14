@@ -65,10 +65,17 @@ export class MatchViewComponent implements OnInit {
 
       let centerPoints = this.getCenterValues(downBox, upBox);
       let degree = this.getDegree(centerPoints.x1, centerPoints.x2, centerPoints.y1, centerPoints.y2);
+      let determinant = this.getDeterminant(centerPoints.x1, centerPoints.x2, centerPoints.y1, centerPoints.y2);
+
+      if(determinant<0) degree+=180;
 
       this.transformParameter = this.getTransformParameter(degree)
       console.log(centerPoints);
     }
+  }
+
+  getDeterminant(x1: number, x2: number, y1: number, y2: number): number {
+    return x1*y2 - x2*y1;
   }
 
   getTransformParameter(degree: number): string {
