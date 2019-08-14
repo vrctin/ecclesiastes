@@ -23,6 +23,11 @@ export class MatchViewComponent implements OnInit {
     return this.provinceIDs.indexOf(event.srcElement.id)!=-1;
   }
 
+  resetProvinces(){
+    this.currentUpProvince = '';
+    this.currentDownProvince = '';
+  }
+
   @HostListener('mousedown', ['$event'])
   onMousedown($event){
     //console.log("Mousedown on " + $event.srcElement.id);
@@ -52,25 +57,29 @@ export class MatchViewComponent implements OnInit {
     this.panZoomMap.enablePan();
     //console.log("Mouseup on " + $event.srcElement.id);
     // Data updates
-    this.currentlyOnProvince = false;
-    this.currentUpProvince = $event.srcElement.id;
+    if(this.isProvince($event)){
+      this.currentlyOnProvince = false;
+      this.currentUpProvince = $event.srcElement.id;
 
 
-    console.log("Down on: " + this.currentDownProvince);
-    console.log("Up on: " + this.currentUpProvince);
+      console.log("Down on: " + this.currentDownProvince);
+      console.log("Up on: " + this.currentUpProvince);
 
-    if(this.currentDownProvince && this.currentUpProvince){
-      let downBox = (<any>document.getElementById(this.currentDownProvince)).getBBox();
-      let upBox = (<any>document.getElementById(this.currentUpProvince)).getBBox();
+      if(this.currentDownProvince && this.currentUpProvince){
+        let downBox = (<any>document.getElementById(this.currentDownProvince)).getBBox();
+        let upBox = (<any>document.getElementById(this.currentUpProvince)).getBBox();
 
-      let centerPoints = this.getCenterValues(downBox, upBox);
-      let degree = this.getDegree(centerPoints.x1, centerPoints.x2, centerPoints.y1, centerPoints.y2);
-      let determinant = this.getDeterminant(centerPoints.x1, centerPoints.x2, centerPoints.y1, centerPoints.y2);
+        let centerPoints = this.getCenterValues(downBox, upBox);
+        let degree = this.getDegree(centerPoints.x1, centerPoints.x2, centerPoints.y1, centerPoints.y2);
+        let determinant = this.getDeterminant(centerPoints.x1, centerPoints.x2, centerPoints.y1, centerPoints.y2);
 
-      if(determinant<0) degree+=180;
+        if(determinant<0) degree+=180;
 
-      this.transformParameter = this.getTransformParameter(degree)
-      console.log(centerPoints);
+        console.log("Degree: " + degree);
+        console.log("Determinant: " + determinant);
+        this.transformParameter = this.getTransformParameter(degree);
+        console.log(centerPoints);
+      }
     }
   }
 
