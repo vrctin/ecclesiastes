@@ -1,5 +1,6 @@
-import { Component, OnInit, AfterViewInit, ElementRef, ViewChild } from '@angular/core';
+import { Component, OnInit, AfterViewInit, ElementRef, ViewChild, HostListener } from '@angular/core';
 import * as svgPanZoom from "svg-pan-zoom";
+import { GameInfoService } from "./services/game-info.service";
 
 @Component({
   selector: 'app-match-view',
@@ -8,16 +9,69 @@ import * as svgPanZoom from "svg-pan-zoom";
 })
 
 export class MatchViewComponent implements OnInit {
+  private gameData = {};
+  public currentlyOnProvince = this.gameData.mouseDownOnProvince;
   @ViewChild('gameMap', { static: false }) scene: ElementRef;
 
-  constructor() {}
-  ngOnInit() {
-  }
+  $subscription;
 
+  // Click events
   getId(event: any){
-    console.log("Mouse down on element with id " + event.toElement.id)
+    console.log("Mousedown on province - currentlyOnProv = true");
+    this.currentlyOnProvince = true;
   }
 
+  check(){
+    console.log("Lifted click - currentlyOnProv = false");
+    this.currentlyOnProvince = false;
+  }
+
+  // De tinut minte ca se poate asa ceva, lol
+  @HostListener('mousedown')
+  onMousedown(){
+    if(this.currentlyOnProvince){
+      console.log("Mousedown event detected & is corrently on prov!");
+      this.panZoomMap.disablePan();
+      //this.panZoomMap.updateBBox();
+    } else {
+      this.panZoomMap.enablePan();
+    }
+  }
+
+  @HostListener('mouseup')
+  onMouseup(){
+    console.log("Mouseup event detected, reactivating pan!");
+    this.panZoomMap.enablePan();
+    //this.panZoomMap.reset();
+
+  }
+
+  // Constructor & Lifehooks
+  constructor(private gameInfoService: GameInfoService) {}
+
+  ngOnInit() {
+    this.$subscription = this.gameInfoService.getJsonData().subscribe(data => {
+      this.gameData = data;
+    })
+  }
+
+  public panZoomMap;
+  ngAfterViewInit(){
+    console.log("After init");
+    this.panZoomMap = svgPanZoom('#gameMap', {
+      panEnabled: true,
+      controlIconsEnabled: true,
+      zoomEnabled: true,
+      contain: true,
+      center: true,
+      fit: true,
+      refreshRate: 'auto',
+      zoomScaleSensitivity: 0.6,
+      beforePan: this.beforePan
+    });
+  }
+
+  // Panzoom essentials
   public beforePan = function(oldPan, newPan){
     var stopHorizontal = false;
     var stopVertical = false;
@@ -36,19 +90,4 @@ export class MatchViewComponent implements OnInit {
 
     return customPan;
   };
-
-  ngAfterViewInit(){
-    var panZoomMap = svgPanZoom('#gameMap', {
-      panEnabled: true,
-      controlIconsEnabled: true,
-      zoomEnabled: true,
-      contain: true,
-      center: true,
-      fit: true,
-      refreshRate: 'auto',
-      zoomScaleSensitivity: 0.6,
-      beforePan: this.beforePan
-    });
-  }
-
 }

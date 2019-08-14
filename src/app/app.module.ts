@@ -28,6 +28,9 @@ import { InfoPanelComponent } from './game/match-view/info-panel/info-panel.comp
 // panzoom
 import { Ng2PanZoomModule } from 'ng2-panzoom';
 
+// HttpClientModule
+import { HttpClientModule }    from '@angular/common/http';
+
 const appRoutes: Routes = [
   { path: 'login', component: LoginComponent },
   { path: 'lobby', component: LobbyComponent },
@@ -66,7 +69,9 @@ const appRoutes: Routes = [
 
     FlexLayoutModule,
 
-    Ng2PanZoomModule 
+    Ng2PanZoomModule,
+
+    HttpClientModule
   ],
   providers: [],
   bootstrap: [AppComponent]
