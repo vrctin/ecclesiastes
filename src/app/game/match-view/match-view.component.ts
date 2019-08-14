@@ -17,26 +17,26 @@ export class MatchViewComponent implements OnInit {
   public provinceIDs = ["MT_NO", "MT_CE", "MT_SO", "MT_SE", "MT_GO"];
 
   // Click events
-  isProvince(id: string){
+  isProvince(event: any){
     return this.provinceIDs.indexOf(event.srcElement.id)!=-1;
   }
-  @HostListener('mousedown', event)
 
-  onMousedown(){
-    console.log("Mousedown on " + event.srcElement.id);
-    if(this.isProvince(event)){
+  @HostListener('mousedown', ['$event'])
+  onMousedown($event){
+    console.log("Mousedown on " + $event.srcElement.id);
+    if(this.isProvince($event)){
       this.panZoomMap.disablePan();
 
       // Data updates
       this.currentlyOnProvince = true;
-      this.currentDownProvince = event.srcElement.id;
+      this.currentDownProvince = $event.srcElement.id;
     }
   }
 
-  @HostListener('mouseup', event)
-  onMouseup(){
+  @HostListener('mouseup', ['$event'])
+  onMouseup($event){
     this.panZoomMap.enablePan();
-    console.log("Mouseup on " + event.srcElement.id);
+    console.log("Mouseup on " + $event.srcElement.id);
     // Data updates
     //this.currentlyOnProvince = true;
     //this.currentDownProvince = event.srcElement.id;
@@ -50,7 +50,8 @@ export class MatchViewComponent implements OnInit {
   // Constructor & Lifehooks
   constructor(private gameInfoService: GameInfoService) {}
 
-  ngOnInit() {}
+  ngOnInit() {
+  }
 
   public panZoomMap;
   ngAfterViewInit(){
