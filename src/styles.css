@@ -2,6 +2,8 @@
 @import '@angular/material/prebuilt-themes/deeppurple-amber.css';
 
 .main {
-  background-image:url("assets/floor-tile.png");
+  background-image:url("/assets/old_map.png");
+  background-repeat: repeat;
+  background-size:200px 200px;
   margin: 0;
 }

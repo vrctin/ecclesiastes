@@ -1,6 +1,7 @@
 import { Component, OnInit, AfterViewInit, ElementRef, ViewChild, HostListener } from '@angular/core';
 import * as svgPanZoom from "svg-pan-zoom";
 import { GameInfoService } from "./services/game-info.service";
+import { DOCUMENT } from '@angular/common';
 
 @Component({
   selector: 'app-match-view',
@@ -11,6 +12,7 @@ import { GameInfoService } from "./services/game-info.service";
 export class MatchViewComponent implements OnInit {
   public currentlyOnProvince = false;
   public currentDownProvince = '';
+  public currentUpProvince = '';
 
   @ViewChild('gameMap', { static: false }) scene: ElementRef;
 
@@ -23,23 +25,63 @@ export class MatchViewComponent implements OnInit {
 
   @HostListener('mousedown', ['$event'])
   onMousedown($event){
-    console.log("Mousedown on " + $event.srcElement.id);
+    //console.log("Mousedown on " + $event.srcElement.id);
     if(this.isProvince($event)){
       this.panZoomMap.disablePan();
 
       // Data updates
       this.currentlyOnProvince = true;
       this.currentDownProvince = $event.srcElement.id;
+    } else {
+      this.currentlyOnProvince = false;
+      this.currentDownProvince = $event.srcElement.id;
     }
   }
 
+  getDistance(x1: number, x2:number, y1: number, y2: number): number{
+    return Math.sqrt(Math.pow((x1-x2), 2) + Math.pow((y1-y2), 2));
+  }
+
+  getDegree(x1: number, x2: number, y1: number, y2: number): number{
+    return Math.atan(Math.abs(y1-y2)/Math.abs(x1-x2))*180/Math.PI;
+  }
+
+  public transformParameter = '';
   @HostListener('mouseup', ['$event'])
   onMouseup($event){
     this.panZoomMap.enablePan();
-    console.log("Mouseup on " + $event.srcElement.id);
+    //console.log("Mouseup on " + $event.srcElement.id);
     // Data updates
-    //this.currentlyOnProvince = true;
-    //this.currentDownProvince = event.srcElement.id;
+    this.currentlyOnProvince = false;
+    this.currentUpProvince = $event.srcElement.id;
+
+
+    console.log("Down on: " + this.currentDownProvince);
+    console.log("Up on: " + this.currentUpProvince);
+
+    if(this.currentDownProvince && this.currentUpProvince){
+      let downBox = document.getElementById(this.currentDownProvince).getBBox();
+      let upBox = document.getElementById(this.currentUpProvince).getBBox();
+
+      let centerPoints = this.getCenterValues(downBox, upBox);
+      let degree = this.getDegree(centerPoints.x1, centerPoints.x2, centerPoints.y1, centerPoints.y2);
+
+      this.transformParameter = this.getTransformParameter(degree)
+      console.log(centerPoints);
+    }
+  }
+
+  getTransformParameter(degree: number): string {
+    return "rotate(" + degree + ")";
+  }
+  
+  getCenterValues(first: any, second: any){
+    return {
+      x1: first.x + first.width/2,
+      y1: first.y + first.height/2,
+      x2: second.x + second.width/2,
+      y2: second.y + second.height/2
+    }
   }
 
   @HostListener('mousemove')
@@ -51,6 +93,8 @@ export class MatchViewComponent implements OnInit {
   constructor(private gameInfoService: GameInfoService) {}
 
   ngOnInit() {
+    console.log("getDistance = " + this.getDistance(0, 2, 0, 2));
+    console.log("getDegree = " + this.getDegree(0, 2, 0, 2));
   }
 
   public panZoomMap;

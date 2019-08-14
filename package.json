@@ -33,6 +33,7 @@
     "snapsvg": "^0.5.1",
     "snapsvg-cjs": "0.0.6",
     "svg-pan-zoom": "^3.6.0",
+    "svg.js": "^2.7.1",
     "tslib": "^1.10.0",
     "zone.js": "~0.9.1"
   },
