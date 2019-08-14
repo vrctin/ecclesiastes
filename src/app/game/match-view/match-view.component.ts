@@ -9,11 +9,8 @@ import { GameInfoService } from "./services/game-info.service";
 })
 
 export class MatchViewComponent implements OnInit {
-  private gameData = {};
-  public currentlyOnProvince = this.gameData.mouseDownOnProvince;
+  public currentlyOnProvince = false;
   @ViewChild('gameMap', { static: false }) scene: ElementRef;
-
-  $subscription;
 
   // Click events
   getId(event: any){
@@ -42,18 +39,17 @@ export class MatchViewComponent implements OnInit {
   onMouseup(){
     console.log("Mouseup event detected, reactivating pan!");
     this.panZoomMap.enablePan();
-    //this.panZoomMap.reset();
+  }
 
+  @HostListener('mousemove')
+  onMousemove(){
+    this.panZoomMap.updateBBox();
   }
 
   // Constructor & Lifehooks
   constructor(private gameInfoService: GameInfoService) {}
 
-  ngOnInit() {
-    this.$subscription = this.gameInfoService.getJsonData().subscribe(data => {
-      this.gameData = data;
-    })
-  }
+  ngOnInit() {}
 
   public panZoomMap;
   ngAfterViewInit(){
@@ -84,7 +80,10 @@ export class MatchViewComponent implements OnInit {
     var topLimit = -((sizes.viewBox.y + sizes.viewBox.height) * sizes.realZoom) + gutterHeight;
     var bottomLimit = sizes.height - gutterHeight - (sizes.viewBox.y * sizes.realZoom);
 
-    var customPan = {};
+    var customPan = {
+      x: 0,
+      y: 0
+    };
     customPan.x = Math.max(leftLimit, Math.min(rightLimit, newPan.x));
     customPan.y = Math.max(topLimit, Math.min(bottomLimit, newPan.y));
 

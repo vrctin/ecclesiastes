@@ -15,7 +15,4 @@ export class GameInfoService {
 
   constructor(private http: HttpClient) {}
 
-  getJsonData(): Observable<any>{
-    return this.http.get("assets/game-vars.json");
-  }
 }
