@@ -10,40 +10,41 @@ import { GameInfoService } from "./services/game-info.service";
 
 export class MatchViewComponent implements OnInit {
   public currentlyOnProvince = false;
+  public currentDownProvince = '';
+
   @ViewChild('gameMap', { static: false }) scene: ElementRef;
 
+  public provinceIDs = ["MT_NO", "MT_CE", "MT_SO", "MT_SE", "MT_GO"];
+
   // Click events
-  getId(event: any){
-    console.log("Mousedown on province - currentlyOnProv = true");
-    this.currentlyOnProvince = true;
+  isProvince(id: string){
+    return this.provinceIDs.indexOf(event.srcElement.id)!=-1;
   }
+  @HostListener('mousedown', event)
 
-  check(){
-    console.log("Lifted click - currentlyOnProv = false");
-    this.currentlyOnProvince = false;
-  }
-
-  // De tinut minte ca se poate asa ceva, lol
-  @HostListener('mousedown')
   onMousedown(){
-    if(this.currentlyOnProvince){
-      console.log("Mousedown event detected & is corrently on prov!");
+    console.log("Mousedown on " + event.srcElement.id);
+    if(this.isProvince(event)){
       this.panZoomMap.disablePan();
-      //this.panZoomMap.updateBBox();
-    } else {
-      this.panZoomMap.enablePan();
+
+      // Data updates
+      this.currentlyOnProvince = true;
+      this.currentDownProvince = event.srcElement.id;
     }
   }
 
-  @HostListener('mouseup')
+  @HostListener('mouseup', event)
   onMouseup(){
-    console.log("Mouseup event detected, reactivating pan!");
     this.panZoomMap.enablePan();
+    console.log("Mouseup on " + event.srcElement.id);
+    // Data updates
+    //this.currentlyOnProvince = true;
+    //this.currentDownProvince = event.srcElement.id;
   }
 
   @HostListener('mousemove')
   onMousemove(){
-    this.panZoomMap.updateBBox();
+
   }
 
   // Constructor & Lifehooks
