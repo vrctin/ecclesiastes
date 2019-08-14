@@ -60,8 +60,8 @@ export class MatchViewComponent implements OnInit {
     console.log("Up on: " + this.currentUpProvince);
 
     if(this.currentDownProvince && this.currentUpProvince){
-      let downBox = document.getElementById(this.currentDownProvince).getBBox();
-      let upBox = document.getElementById(this.currentUpProvince).getBBox();
+      let downBox = (<any>document.getElementById(this.currentDownProvince)).getBBox();
+      let upBox = (<any>document.getElementById(this.currentUpProvince)).getBBox();
 
       let centerPoints = this.getCenterValues(downBox, upBox);
       let degree = this.getDegree(centerPoints.x1, centerPoints.x2, centerPoints.y1, centerPoints.y2);
@@ -74,7 +74,7 @@ export class MatchViewComponent implements OnInit {
   getTransformParameter(degree: number): string {
     return "rotate(" + degree + ")";
   }
-  
+
   getCenterValues(first: any, second: any){
     return {
       x1: first.x + first.width/2,
