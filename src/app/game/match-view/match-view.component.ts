@@ -99,13 +99,16 @@ export class MatchViewComponent implements OnInit {
   }
 
   getTransformParameter(degree: number, scaleDegree: string, translateX:number, translateY:number): string {
-    if(!degree) return "rotate(0)"+"scale("+scaleDegree+")"+"translate("+translateX + "," + translateY + ")";
-    console.log("rotate(" + degree + ")"+
-           "scale("+scaleDegree+")"+
-           "translate("+translateX + "," + translateY + ")");
-    return "rotate(" + degree + ")"+
-           "scale("+scaleDegree+")"+
-           "translate("+translateX + "," + translateY + ")";
+    let stringArgs = '';
+
+    stringArgs+="translate("+ translateX + "," + translateY + ")";
+
+    if(!degree) stringArgs+="rotate(0)";
+    else stringArgs+="rotate(" + degree + ")";
+
+    stringArgs += "scale(" + scaleDegree + ")";
+
+    return stringArgs;
   }
 
   isProvince(event: any){
@@ -122,7 +125,7 @@ export class MatchViewComponent implements OnInit {
   }
 
   getDegree(x1: number, x2: number, y1: number, y2: number): number{
-    return Math.atan(Math.abs(y1-y2)/Math.abs(x1-x2))*180/Math.PI;
+    return Math.atan(Math.abs(y2-y1)/Math.abs(x2-x1))*180/Math.PI;
   }
 
   getCenterValues(first: any, second: any){
