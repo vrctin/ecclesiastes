@@ -14,7 +14,13 @@ export class MatchViewComponent implements OnInit {
   public currentDownProvince = '';
   public currentUpProvince = '';
   public showArrow = false;
-  public arrowCoords = {};
+
+  public arrowCoords = {
+    x1: 0,
+    x2: 0,
+    y1: 0,
+    y2: 0
+  };
 
   @ViewChild('gameMap', { static: false }) scene: ElementRef;
 
@@ -68,6 +74,36 @@ export class MatchViewComponent implements OnInit {
 
   updateArrow(originBox: any, targetBox: any): void {
     this.arrowCoords = this.getCenterValues(originBox, targetBox);
+    this.adjustCoordinates(0.25)
+  }
+
+  adjustCoordinates(factor: number){
+    let x_absFactor = Math.abs(this.arrowCoords.x1 - this.arrowCoords.x2)*factor;
+    let y_absFactor = Math.abs(this.arrowCoords.y1 - this.arrowCoords.y2)*factor;
+
+    if(this.arrowCoords.x1 < this.arrowCoords.x2){
+      this.arrowCoords.x1 += x_absFactor;
+      this.arrowCoords.x2 -= x_absFactor;
+    } else {
+      this.arrowCoords.x1 -= x_absFactor;
+      this.arrowCoords.x2 += x_absFactor;
+    }
+
+    if(this.arrowCoords.y1 < this.arrowCoords.y2){
+      this.arrowCoords.y1 += y_absFactor;
+      this.arrowCoords.y2 -= y_absFactor;
+    } else {
+      this.arrowCoords.y1 -= y_absFactor;
+      this.arrowCoords.y2 += y_absFactor;
+    }
+  }
+
+  getSumType(num1: number, num2: number, factor: number): number{
+    return num1 + Math.abs(num1 - num2) * factor;
+  }
+
+  getDifType(num1: number, num2: number, factor: number): number{
+    return num2 - Math.abs(num1 - num2) * factor;
   }
 
   // Util functions
