@@ -12,6 +12,15 @@
 
 }
 
-.linie {
-  color: red;
+.water-bg {
+  
+}
+
+.land
+{
+  fill: #FFFFFF;
+  fill-opacity: 1;
+  stroke:black;
+  stroke-opacity: 0.5;
+  stroke-width:3;
 }
