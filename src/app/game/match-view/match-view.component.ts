@@ -13,9 +13,9 @@ export class MatchViewComponent implements OnInit {
   public currentlyOnProvince = false;
   public currentDownProvince = '';
   public currentUpProvince = '';
-
-
   public showArrow = false;
+  public arrowCoords = {};
+
   @ViewChild('gameMap', { static: false }) scene: ElementRef;
 
   public provinceIDs = ["MT_NO", "MT_CE", "MT_SO", "MT_SE", "MT_GO"];
@@ -38,94 +38,41 @@ export class MatchViewComponent implements OnInit {
     }
   }
 
-  showedOnce = false;
-  currentHover = '';
   @HostListener('mousemove', ['$event'])
   onMousemove($event){
     if(this.currentlyOnProvince && this.currentDownProvince && this.isProvince($event)){
-      let downBox = (<any>document.getElementById(this.currentDownProvince)).getBBox();
-      let upBox = (<any>document.getElementById($event.srcElement.id)).getBBox();
+      let originBox = this.fetchBBox(this.currentDownProvince);
+      let targetBox = this.fetchBBox($event.srcElement.id);
 
-      if(!this.showedOnce){
-        console.log("Over " + $event.srcElement.id);
-        this.currentHover = $event.srcElement.id;
-        this.showedOnce = true;
-      }
-
-      if(this.showedOnce && $event.srcElement.id!=this.currentHover){
-        this.currentHover = $event.srcElement.id;
-        this.showedOnce = false;
-      }
-
-      this.updateArrow(downBox, upBox);
+      this.updateArrow(originBox, targetBox);
     }
   }
 
-  public transformParameter = 'rotate(0)scale(0.1)';
   @HostListener('mouseup', ['$event'])
   onMouseup($event){
+    // Data updates
+    this.currentlyOnProvince = false;
     this.showArrow = false;
     this.panZoomMap.enablePan();
-    //console.log("Mouseup on " + $event.srcElement.id);
-    // Data updates
 
-    this.currentlyOnProvince = false;
     if(this.isProvince($event)){
       this.currentUpProvince = $event.srcElement.id;
 
-      //console.log("Down on: " + this.currentDownProvince);
-      //console.log("Up on: " + this.currentUpProvince);
-
       if(this.currentDownProvince && this.currentUpProvince){
-        let downBox = (<any>document.getElementById(this.currentDownProvince)).getBBox();
-        let upBox = (<any>document.getElementById(this.currentUpProvince)).getBBox();
-        this.updateArrow(downBox, upBox);
+        let originBox = this.fetchBBox(this.currentDownProvince);
+        let targetBox = this.fetchBBox(this.currentUpProvince);
+        this.updateArrow(originBox, targetBox);
       }
     }
   }
 
-  scaleDegree = "0.1";
-  // Graphics & checks
-  updateArrow(downBox: any, upBox: any): void {
-    let centerPoints = this.getCenterValues(downBox, upBox);
-    let degree = this.getDegree(centerPoints.x1, centerPoints.x2, centerPoints.y1, centerPoints.y2);
-    let determinant = this.getDeterminant(centerPoints.x1, centerPoints.x2, centerPoints.y1, centerPoints.y2);
-
-    if(determinant<0) degree+=180;
-
-    //console.log("Degree: " + degree);
-    //console.log("Determinant: " + determinant);
-    this.transformParameter = this.getTransformParameter(degree, this.scaleDegree, centerPoints.x1, centerPoints.y1);
+  updateArrow(originBox: any, targetBox: any): void {
+    this.arrowCoords = this.getCenterValues(originBox, targetBox);
   }
 
-  getTransformParameter(degree: number, scaleDegree: string, translateX:number, translateY:number): string {
-    let stringArgs = '';
-
-    stringArgs+="translate("+ translateX + "," + translateY + ")";
-
-    if(!degree) stringArgs+="rotate(0)";
-    else stringArgs+="rotate(" + degree + ")";
-
-    stringArgs += "scale(" + scaleDegree + ")";
-
-    return stringArgs;
-  }
-
+  // Util functions
   isProvince(event: any){
     return this.provinceIDs.indexOf(event.srcElement.id)!=-1;
-  }
-
-  // Game Math
-  getDeterminant(x1: number, x2: number, y1: number, y2: number): number {
-    return x1*y2 - x2*y1;
-  }
-
-  getDistance(x1: number, x2:number, y1: number, y2: number): number{
-    return Math.sqrt(Math.pow((x1-x2), 2) + Math.pow((y1-y2), 2));
-  }
-
-  getDegree(x1: number, x2: number, y1: number, y2: number): number{
-    return Math.atan(Math.abs(y2-y1)/Math.abs(x2-x1))*180/Math.PI;
   }
 
   getCenterValues(first: any, second: any){
@@ -137,13 +84,14 @@ export class MatchViewComponent implements OnInit {
     }
   }
 
+  fetchBBox(id: any){
+    return (<any>document.getElementById(id)).getBBox();
+  }
+
   // Constructor & Lifehooks
   constructor(private gameInfoService: GameInfoService) {}
 
-  ngOnInit() {
-    console.log("getDistance = " + this.getDistance(0, 2, 0, 2));
-    console.log("getDegree = " + this.getDegree(0, 2, 0, 2));
-  }
+  ngOnInit() {}
 
   public panZoomMap;
   ngAfterViewInit(){

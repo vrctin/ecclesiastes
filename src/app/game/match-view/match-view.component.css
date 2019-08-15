@@ -13,7 +13,7 @@
 }
 
 .water-bg {
-  
+
 }
 
 .land
@@ -21,6 +21,6 @@
   fill: #FFFFFF;
   fill-opacity: 1;
   stroke:black;
-  stroke-opacity: 0.5;
+  stroke-opacity: 1;
   stroke-width:3;
 }
