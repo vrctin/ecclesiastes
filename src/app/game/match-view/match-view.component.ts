@@ -29,7 +29,8 @@ export class MatchViewComponent implements OnInit {
   // Click events
   @HostListener('mousedown', ['$event'])
   onMousedown($event){
-    console.log("Holding " + $event.srcElement.id);
+    let eventId = $event.srcElement.id;
+    console.log("Holding " + eventId);
     let allPaths = Array.from((<any>document.getElementsByTagName('path')));
 
     if(this.isProvince($event)){
@@ -37,11 +38,15 @@ export class MatchViewComponent implements OnInit {
 
       // Setting outline
       this.restoreOutlines(allPaths, "black");
-      this.setOutlineOfId($event.srcElement.id, "red");
+      this.setOutlineOfId(eventId, "red");
+
+      // Append (bring to front)
+      let currentElement = (<any>document.getElementById(eventId));
+      this.bringElementToFront(currentElement);
 
       // Data updates
       this.currentlyOnProvince = true;
-      this.currentDownProvince = $event.srcElement.id;
+      this.currentDownProvince = eventId;
     } else {
 
       this.restoreOutlines(allPaths, "black");
@@ -106,15 +111,13 @@ export class MatchViewComponent implements OnInit {
     }
   }
 
-  getSumType(num1: number, num2: number, factor: number): number{
-    return num1 + Math.abs(num1 - num2) * factor;
-  }
-
-  getDifType(num1: number, num2: number, factor: number): number{
-    return num2 - Math.abs(num1 - num2) * factor;
-  }
-
   // Util functions
+  bringElementToFront(element: any){
+    let parent = element.parentNode;
+    parent.removeChild(element);
+    parent.appendChild(element);
+  }
+
   setOutlineOfId(provinceId: any, color: string){
     document.getElementById(provinceId).style.stroke = color;
   }

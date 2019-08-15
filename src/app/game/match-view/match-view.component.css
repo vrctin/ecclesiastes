@@ -1,9 +1,11 @@
 .info-panel {
   background-color: white;
+
 }
 
 .horizontal {
   height:100vh;
+  overflow-y: hidden;
 }
 
 .game-map-panel {
