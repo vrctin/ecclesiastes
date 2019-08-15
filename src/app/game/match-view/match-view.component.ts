@@ -31,8 +31,6 @@ export class MatchViewComponent implements OnInit {
   onMousedown($event){
     console.log("Holding " + $event.srcElement.id);
     if(this.isProvince($event)){
-      this.showArrow = true;
-
       this.panZoomMap.disablePan();
 
       // Data updates
@@ -47,6 +45,8 @@ export class MatchViewComponent implements OnInit {
   @HostListener('mousemove', ['$event'])
   onMousemove($event){
     if(this.currentlyOnProvince && this.currentDownProvince && this.isProvince($event)){
+      if($event.srcElement.id!=this.currentDownProvince) this.showArrow = true;
+
       let originBox = this.fetchBBox(this.currentDownProvince);
       let targetBox = this.fetchBBox($event.srcElement.id);
 
