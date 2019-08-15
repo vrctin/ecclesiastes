@@ -1,0 +1,22 @@
+h1 {
+  padding-top:20px;
+  font-weight: bold;
+  font-size:40px;
+  color: #E1E2EF;
+}
+
+p {
+  color: #E1E2EF;
+}
+
+mat-divider {
+  border-color: #E1E2EF;
+}
+
+.province-info {
+  width:100%;
+}
+.info-container {
+  background-color: #1D1314;
+  height:100vh;
+}

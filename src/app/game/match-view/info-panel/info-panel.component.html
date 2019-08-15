@@ -1,1 +1,10 @@
-<p>info-panel works!</p>
+<link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500" rel="stylesheet">
+
+<section class="mat-typography">
+  <div class="info-container" fxLayout="column" fxLayoutAlign="start center">
+    <h1 *ngIf="selectedProvince">{{selectedProvince}}</h1>
+    <mat-divider *ngIf="selectedProvince"></mat-divider>
+
+    <p *ngIf="selectedProvince">{{provinceInfo}}</p>
+  </div>
+</section>

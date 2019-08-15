@@ -30,15 +30,23 @@ export class MatchViewComponent implements OnInit {
   @HostListener('mousedown', ['$event'])
   onMousedown($event){
     console.log("Holding " + $event.srcElement.id);
+    let allPaths = Array.from((<any>document.getElementsByTagName('path')));
+
     if(this.isProvince($event)){
       this.panZoomMap.disablePan();
+
+      // Setting outline
+      this.restoreOutlines(allPaths, "black");
+      this.setOutlineOfId($event.srcElement.id, "red");
 
       // Data updates
       this.currentlyOnProvince = true;
       this.currentDownProvince = $event.srcElement.id;
     } else {
+
+      this.restoreOutlines(allPaths, "black");
+      this.currentDownProvince = '';
       this.currentlyOnProvince = false;
-      this.currentDownProvince = $event.srcElement.id;
     }
   }
 
@@ -107,6 +115,16 @@ export class MatchViewComponent implements OnInit {
   }
 
   // Util functions
+  setOutlineOfId(provinceId: any, color: string){
+    document.getElementById(provinceId).style.stroke = color;
+  }
+
+  restoreOutlines(paths: any[], color: string){
+      var element;
+      for(element of paths)
+        if(element.id) document.getElementById(element.id).style.stroke = color;
+  }
+
   isProvince(event: any){
     return this.provinceIDs.indexOf(event.srcElement.id)!=-1;
   }
