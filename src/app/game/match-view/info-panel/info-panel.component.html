@@ -2,9 +2,16 @@
 
 <section class="mat-typography">
   <div class="info-container" fxLayout="column" fxLayoutAlign="start center">
-    <h1 *ngIf="selectedProvince">{{selectedProvince}}</h1>
-    <mat-divider *ngIf="selectedProvince"></mat-divider>
+    <h1>{{info.sessionData.currentlyHeldProvince}}</h1>
+    <mat-divider *ngIf="info.sessionData.currentlyHeldProvince"></mat-divider>
 
-    <p *ngIf="selectedProvince">{{provinceInfo}}</p>
+    <p *ngIf="info.sessionData.currentlyHeldProvince">{{provinceInfo | json}}</p>
+
+    <p>isHoldingProvince: {{info.sessionData.isHoldingProvince}}</p>
+    <p>currentlyHeldProvince: {{info.sessionData.currentlyHeldProvince}}</p>
+    <p>isTargeting: {{info.sessionData.isTargeting}}</p>
+    <p>lastTarget: {{info.sessionData.lastTarget}}</p>
+    <p>showAttackArrow: {{info.sessionData.showAttackArrow}}</p>
+
   </div>
 </section>

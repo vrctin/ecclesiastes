@@ -1,6 +1,7 @@
 import { Component, OnInit, AfterViewInit, ElementRef, ViewChild, HostListener } from '@angular/core';
 import * as svgPanZoom from "svg-pan-zoom";
 import { GameInfoService } from "./services/game-info.service";
+import { DetailModel } from "./services/detail-model";
 import { DOCUMENT } from '@angular/common';
 
 @Component({
@@ -10,27 +11,15 @@ import { DOCUMENT } from '@angular/common';
 })
 
 export class MatchViewComponent implements OnInit {
-  public currentlyOnProvince = false;
-  public currentDownProvince = '';
-  public currentUpProvince = '';
-  public showArrow = false;
-
-  public arrowCoords = {
-    x1: 0,
-    x2: 0,
-    y1: 0,
-    y2: 0
-  };
-
   @ViewChild('gameMap', { static: false }) scene: ElementRef;
-
   public provinceIDs = ["MT_NO", "MT_CE", "MT_SO", "MT_SE", "MT_GO"];
+
+  public gameData: DetailModel = this.info.sessionData;
 
   // Click events
   @HostListener('mousedown', ['$event'])
   onMousedown($event){
     let eventId = $event.srcElement.id;
-    console.log("Holding " + eventId);
     let allPaths = Array.from((<any>document.getElementsByTagName('path')));
 
     if(this.isProvince($event)){
@@ -45,23 +34,33 @@ export class MatchViewComponent implements OnInit {
       this.bringElementToFront(currentElement);
 
       // Data updates
-      this.currentlyOnProvince = true;
-      this.currentDownProvince = eventId;
+      this.gameData.isHoldingProvince = true;
+      this.gameData.currentlyHeldProvince = eventId;
     } else {
-
       this.restoreOutlines(allPaths, "black");
-      this.currentDownProvince = '';
-      this.currentlyOnProvince = false;
+      this.gameData.isHoldingProvince = false;
+      this.gameData.currentlyHeldProvince = '';
     }
+  }
+
+  truthyDownValues():any {
+    return this.gameData.isHoldingProvince && this.gameData.currentlyHeldProvince;
   }
 
   @HostListener('mousemove', ['$event'])
   onMousemove($event){
-    if(this.currentlyOnProvince && this.currentDownProvince && this.isProvince($event)){
-      if($event.srcElement.id!=this.currentDownProvince) this.showArrow = true;
+    this.info.sessionData = this.gameData;
+    //this.info.printData();
 
-      let originBox = this.fetchBBox(this.currentDownProvince);
-      let targetBox = this.fetchBBox($event.srcElement.id);
+    if(this.truthyDownValues() && this.isProvince($event)){
+      let eventId = $event.srcElement.id;
+      if(eventId!=this.gameData.currentlyHeldProvince){
+        this.gameData.isTargeting = eventId;
+        this.gameData.showAttackArrow = true;
+      }
+
+      let originBox = this.fetchBBox(this.gameData.currentlyHeldProvince);
+      let targetBox = this.fetchBBox(eventId);
 
       this.updateArrow(originBox, targetBox);
     }
@@ -70,44 +69,44 @@ export class MatchViewComponent implements OnInit {
   @HostListener('mouseup', ['$event'])
   onMouseup($event){
     // Data updates
-    this.currentlyOnProvince = false;
-    this.showArrow = false;
+    this.gameData.isHoldingProvince = false;
+    this.gameData.showAttackArrow = false;
     this.panZoomMap.enablePan();
 
     if(this.isProvince($event)){
-      this.currentUpProvince = $event.srcElement.id;
+      this.gameData.lastTarget = $event.srcElement.id;
 
-      if(this.currentDownProvince && this.currentUpProvince){
-        let originBox = this.fetchBBox(this.currentDownProvince);
-        let targetBox = this.fetchBBox(this.currentUpProvince);
+      if(this.gameData.currentlyHeldProvince && this.gameData.lastTarget){
+        let originBox = this.fetchBBox(this.gameData.currentlyHeldProvince);
+        let targetBox = this.fetchBBox(this.gameData.lastTarget);
         this.updateArrow(originBox, targetBox);
       }
     }
   }
 
   updateArrow(originBox: any, targetBox: any): void {
-    this.arrowCoords = this.getCenterValues(originBox, targetBox);
-    this.adjustCoordinates(0.25)
+    this.gameData.arrowCoordinates = this.getCenterValues(originBox, targetBox);
+    this.adjustCoordinates(0.25);
   }
 
   adjustCoordinates(factor: number){
-    let x_absFactor = Math.abs(this.arrowCoords.x1 - this.arrowCoords.x2)*factor;
-    let y_absFactor = Math.abs(this.arrowCoords.y1 - this.arrowCoords.y2)*factor;
+    let x_absFactor = Math.abs(this.gameData.arrowCoordinates.x1 - this.gameData.arrowCoordinates.x2)*factor;
+    let y_absFactor = Math.abs(this.gameData.arrowCoordinates.y1 - this.gameData.arrowCoordinates.y2)*factor;
 
-    if(this.arrowCoords.x1 < this.arrowCoords.x2){
-      this.arrowCoords.x1 += x_absFactor;
-      this.arrowCoords.x2 -= x_absFactor;
+    if(this.gameData.arrowCoordinates.x1 < this.gameData.arrowCoordinates.x2){
+      this.gameData.arrowCoordinates.x1 += x_absFactor;
+      this.gameData.arrowCoordinates.x2 -= x_absFactor;
     } else {
-      this.arrowCoords.x1 -= x_absFactor;
-      this.arrowCoords.x2 += x_absFactor;
+      this.gameData.arrowCoordinates.x1 -= x_absFactor;
+      this.gameData.arrowCoordinates.x2 += x_absFactor;
     }
 
-    if(this.arrowCoords.y1 < this.arrowCoords.y2){
-      this.arrowCoords.y1 += y_absFactor;
-      this.arrowCoords.y2 -= y_absFactor;
+    if(this.gameData.arrowCoordinates.y1 < this.gameData.arrowCoordinates.y2){
+      this.gameData.arrowCoordinates.y1 += y_absFactor;
+      this.gameData.arrowCoordinates.y2 -= y_absFactor;
     } else {
-      this.arrowCoords.y1 -= y_absFactor;
-      this.arrowCoords.y2 += y_absFactor;
+      this.gameData.arrowCoordinates.y1 -= y_absFactor;
+      this.gameData.arrowCoordinates.y2 += y_absFactor;
     }
   }
 
@@ -146,7 +145,7 @@ export class MatchViewComponent implements OnInit {
   }
 
   // Constructor & Lifehooks
-  constructor(private gameInfoService: GameInfoService) {}
+  constructor(private info: GameInfoService) {}
 
   ngOnInit() {}
 

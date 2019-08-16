@@ -2,7 +2,7 @@
   <div fxFlex>
     <svg id="gameMap" class="game-map-panel">
       <defs>
-        <marker *ngIf="showArrow" id="arrow" markerWidth="10" markerHeight="10" refX="7" refY="3" orient="auto" markerUnits="strokeWidth">
+        <marker *ngIf="gameData.showAttackArrow" id="arrow" markerWidth="10" markerHeight="10" refX="7" refY="3" orient="auto" markerUnits="strokeWidth">
           <path d="M0,0 L0,6 L9,3 z"/>
         </marker>
       </defs>
@@ -20,15 +20,13 @@
         <circle cx="820.8599853515625" cy="668.5499877929688" r="20" stroke="black" stroke-width="3" fill="red" />
         <circle cx="959.7550048828125" cy="633.9449768066406" r="20" stroke="black" stroke-width="3" fill="red" />
 
-        <line *ngIf="showArrow" [attr.x1]="arrowCoords.x1" [attr.x2]="arrowCoords.x2" [attr.y1]="arrowCoords.y1" [attr.y2]="arrowCoords.y2" stroke="#000" stroke-width="5" marker-end="url(#arrow)"/>
+        <line *ngIf="gameData.showAttackArrow" [attr.x1]="gameData.arrowCoordinates.x1" [attr.x2]="gameData.arrowCoordinates.x2" [attr.y1]="gameData.arrowCoordinates.y1" [attr.y2]="gameData.arrowCoordinates.y2" stroke="#000" stroke-width="5" marker-end="url(#arrow)"/>
       </g>
     </svg>
   </div>
   <div fxFlex="20" class="info-panel">
     <app-info-panel
-      [selectedProvince]="currentDownProvince"
-      [attacking]="currentlyDownProvince"
-      [target]="currentUpProvince"></app-info-panel>
+    [quickfix]="gameData"></app-info-panel>
   </div>
 </div>
 <router-outlet></router-outlet>

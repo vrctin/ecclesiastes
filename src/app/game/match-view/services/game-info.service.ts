@@ -1,18 +1,30 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { DetailModel } from './detail-model';
 
 @Injectable({
   providedIn: 'root'
 })
 
 export class GameInfoService {
+  sessionData: DetailModel = {
+    isHoldingProvince: false,
+    currentlyHeldProvince:'',
 
-  testBool: boolean = false;
+    isTargeting: false,
+    lastTarget: '',
+    showAttackArrow: false,
+    arrowCoordinates: {
+      x1: 0,
+      x2: 0,
+      y1: 0,
+      y2: 0
+    }
+  };
 
-  public spitTest(): void {
-    console.log(this.testBool);
+  printData(){
+    console.log(this.sessionData);
   }
-
-  constructor(private http: HttpClient) {}
+  constructor() {}
 
 }
