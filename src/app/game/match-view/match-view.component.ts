@@ -57,6 +57,8 @@ export class MatchViewComponent implements OnInit {
       if(eventId!=this.gameData.currentlyHeldProvince){
         this.gameData.isTargeting = eventId;
         this.gameData.showAttackArrow = true;
+      } else {
+        this.gameData.showAttackArrow = false;
       }
 
       let originBox = this.fetchBBox(this.gameData.currentlyHeldProvince);
