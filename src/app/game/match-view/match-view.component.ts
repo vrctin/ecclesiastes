@@ -13,8 +13,11 @@ import { DOCUMENT } from '@angular/common';
 export class MatchViewComponent implements OnInit {
   @ViewChild('gameMap', { static: false }) scene: ElementRef;
   public provinceIDs = ["MT_NO", "MT_CE", "MT_SO", "MT_SE", "MT_GO"];
-
   public gameData: DetailModel = this.info.sessionData;
+
+  processEndTurn(event: any){
+    this.info.resetTurnData();
+  }
 
   // Click events
   @HostListener('mousedown', ['$event'])
@@ -55,9 +58,10 @@ export class MatchViewComponent implements OnInit {
     if(this.truthyDownValues() && this.isProvince($event)){
       let eventId = $event.srcElement.id;
       if(eventId!=this.gameData.currentlyHeldProvince){
-        this.gameData.isTargeting = eventId;
+        this.gameData.currentTarget = eventId;
         this.gameData.showAttackArrow = true;
       } else {
+        this.gameData.currentTarget = '';
         this.gameData.showAttackArrow = false;
       }
 
@@ -68,15 +72,27 @@ export class MatchViewComponent implements OnInit {
     }
   }
 
+  isForeignAttacker(){
+    return this.gameData.currentlyHeldProvince!=this.gameData.lastTarget;
+  }
   @HostListener('mouseup', ['$event'])
   onMouseup($event){
     // Data updates
+    this.gameData.currentTarget = '';
     this.gameData.isHoldingProvince = false;
     this.gameData.showAttackArrow = false;
     this.panZoomMap.enablePan();
 
     if(this.isProvince($event)){
       this.gameData.lastTarget = $event.srcElement.id;
+
+      if(this.isForeignAttacker()){
+        let attackEvent = {
+          attacker:this.gameData.currentlyHeldProvince,
+          attacked:this.gameData.lastTarget
+        }
+        this.info.currentTurnEvents.push(attackEvent);
+      }
 
       if(this.gameData.currentlyHeldProvince && this.gameData.lastTarget){
         let originBox = this.fetchBBox(this.gameData.currentlyHeldProvince);
@@ -149,7 +165,9 @@ export class MatchViewComponent implements OnInit {
   // Constructor & Lifehooks
   constructor(private info: GameInfoService) {}
 
-  ngOnInit() {}
+  ngOnInit(){
+    console.log("Init");
+  }
 
   public panZoomMap;
   ngAfterViewInit(){

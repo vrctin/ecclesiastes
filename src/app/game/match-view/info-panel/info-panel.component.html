@@ -6,12 +6,13 @@
     <mat-divider *ngIf="info.sessionData.currentlyHeldProvince"></mat-divider>
 
     <p *ngIf="info.sessionData.currentlyHeldProvince">{{provinceInfo | json}}</p>
-
+    <p>currentTurn: {{info.sessionData.currentTurn}}</p>
     <p>isHoldingProvince: {{info.sessionData.isHoldingProvince}}</p>
     <p>currentlyHeldProvince: {{info.sessionData.currentlyHeldProvince}}</p>
-    <p>isTargeting: {{info.sessionData.isTargeting}}</p>
+    <p>currentTarget: {{info.sessionData.currentTarget}}</p>
     <p>lastTarget: {{info.sessionData.lastTarget}}</p>
     <p>showAttackArrow: {{info.sessionData.showAttackArrow}}</p>
 
+    <button mat-flat-button color="warn" (mousedown)="endTurnEmitter()">End Turn</button>
   </div>
 </section>

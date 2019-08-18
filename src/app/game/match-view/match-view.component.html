@@ -25,8 +25,7 @@
     </svg>
   </div>
   <div fxFlex="20" class="info-panel">
-    <app-info-panel
-    [quickfix]="gameData"></app-info-panel>
+    <app-info-panel (endTurnCount)="processEndTurn($event)"></app-info-panel>
   </div>
 </div>
 <router-outlet></router-outlet>
