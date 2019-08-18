@@ -68,6 +68,8 @@ export class MatchViewComponent implements OnInit {
       let targetBox = this.fetchBBox(eventId);
 
       this.updateArrow(originBox, targetBox);
+    } else {
+      this.gameData.showAttackArrow = false;
     }
   }
 
