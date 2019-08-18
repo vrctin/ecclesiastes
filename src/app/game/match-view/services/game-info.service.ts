@@ -11,7 +11,7 @@ export class GameInfoService {
     currentTurn: 0,
     isHoldingProvince: false,
     currentlyHeldProvince:'',
-
+    canAttack: true,
     currentTarget: '',
     lastTarget: '',
     showAttackArrow: false,
@@ -35,6 +35,7 @@ export class GameInfoService {
     this.sessionData.currentTarget = '';
     this.sessionData.lastTarget = '';
     this.sessionData.showAttackArrow = false;
+    this.sessionData.canAttack = true;
   }
 
   printData(){

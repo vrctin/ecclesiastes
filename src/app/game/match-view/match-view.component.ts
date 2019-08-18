@@ -37,8 +37,10 @@ export class MatchViewComponent implements OnInit {
       this.bringElementToFront(currentElement);
 
       // Data updates
-      this.gameData.isHoldingProvince = true;
-      this.gameData.currentlyHeldProvince = eventId;
+      if(this.gameData.canAttack){
+        this.gameData.isHoldingProvince = true;
+        this.gameData.currentlyHeldProvince = eventId;
+      }
     } else {
       this.restoreOutlines(allPaths, "black");
       this.gameData.isHoldingProvince = false;
@@ -52,9 +54,6 @@ export class MatchViewComponent implements OnInit {
 
   @HostListener('mousemove', ['$event'])
   onMousemove($event){
-    this.info.sessionData = this.gameData;
-    //this.info.printData();
-
     if(this.truthyDownValues() && this.isProvince($event)){
       let eventId = $event.srcElement.id;
       if(eventId!=this.gameData.currentlyHeldProvince){
@@ -83,7 +82,7 @@ export class MatchViewComponent implements OnInit {
     this.gameData.showAttackArrow = false;
     this.panZoomMap.enablePan();
 
-    if(this.isProvince($event)){
+    if(this.isProvince($event) && this.gameData.canAttack){
       this.gameData.lastTarget = $event.srcElement.id;
 
       if(this.isForeignAttacker()){
@@ -92,6 +91,11 @@ export class MatchViewComponent implements OnInit {
           attacked:this.gameData.lastTarget
         }
         this.info.currentTurnEvents.push(attackEvent);
+
+        if(this.info.currentTurnEvents.length==5){
+          console.log("Reached max no. of turns");
+          this.gameData.canAttack = false;
+        }
       }
 
       if(this.gameData.currentlyHeldProvince && this.gameData.lastTarget){

@@ -17,3 +17,20 @@ mat-divider {
   background-color: #1D1314;
   height:100vh;
 }
+
+.turn-circles {
+  height:60px;
+  margin-bottom: 20px;
+  background-color: #635255;
+  width:100%;
+}
+
+.turn-circle{
+  height: 35px;
+  width: 35px;
+  background-color: #DFD9E2;
+  border-radius: 50%;
+  display: inline-block;
+  margin-left: 10px;
+  margin-right:10px;
+}

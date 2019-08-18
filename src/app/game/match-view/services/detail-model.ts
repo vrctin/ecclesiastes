@@ -1,11 +1,14 @@
 export interface DetailModel {
   currentTurn: number,
-  isHoldingProvince: boolean,
   currentlyHeldProvince: string,
 
   currentTarget: string,
   lastTarget: string,
-  showAttackArrow: boolean;
+
+  showAttackArrow: boolean,
+  canAttack: boolean,
+  isHoldingProvince: boolean,
+  
   arrowCoordinates: {
     x1: number,
     x2: number,

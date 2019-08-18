@@ -13,6 +13,14 @@
     <p>lastTarget: {{info.sessionData.lastTarget}}</p>
     <p>showAttackArrow: {{info.sessionData.showAttackArrow}}</p>
 
+    <div class="turn-circles" fxLayout="row" fxLayoutAlign="center center">
+      <span [@switchTurnCircleColor]="toMark[0]" class="turn-circle"></span>
+      <span [@switchTurnCircleColor]="toMark[1]" class="turn-circle"></span>
+      <span [@switchTurnCircleColor]="toMark[2]" class="turn-circle"></span>
+      <span [@switchTurnCircleColor]="toMark[3]" class="turn-circle"></span>
+      <span [@switchTurnCircleColor]="toMark[4]" class="turn-circle"></span>
+    </div>
+
     <button mat-flat-button color="warn" (mousedown)="endTurnEmitter()">End Turn</button>
   </div>
 </section>

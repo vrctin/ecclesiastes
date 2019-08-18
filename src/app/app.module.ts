@@ -18,6 +18,7 @@ import {MatButtonModule} from '@angular/material/button';
 import {MatInputModule} from '@angular/material/input';
 import { FormsModule } from '@angular/forms';
 import {MatDividerModule} from '@angular/material/divider';
+import {MatChipsModule} from '@angular/material/chips';
 
 // Flex layout
 import { FlexLayoutModule } from '@angular/flex-layout';
@@ -68,6 +69,7 @@ const appRoutes: Routes = [
     MatInputModule,
     FormsModule,
     MatDividerModule,
+    MatChipsModule,
 
     FlexLayoutModule,
 
